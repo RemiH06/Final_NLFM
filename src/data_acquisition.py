@@ -12,6 +12,10 @@ from typing import List, Dict, Optional
 def GetBanxicoToken(tokenPath: str) -> str:
     """
     Read Banxico API token from file.
+    Supports multiple formats:
+    - Plain text: just the token
+    - Key-value: token="value"
+    - Key-value with quotes: token='value'
     
     Parameters:
     -----------
@@ -24,7 +28,18 @@ def GetBanxicoToken(tokenPath: str) -> str:
         API token
     """
     with open(tokenPath, 'r') as file:
-        token = file.read().strip()
+        content = file.read().strip()
+    
+    # Check if it's in key-value format
+    if '=' in content:
+        # Extract value after '='
+        token = content.split('=')[1].strip()
+        # Remove quotes if present
+        token = token.strip('"').strip("'")
+    else:
+        # Plain text format
+        token = content
+    
     return token
 
 
